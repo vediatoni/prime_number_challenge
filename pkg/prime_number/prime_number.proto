@@ -1,0 +1,22 @@
+syntax = "proto3";
+package prime_number;
+
+option go_package = "github.com/vediatoni/prime-number-challenge/pkg/prime_number";
+
+service PrimeNumberService {
+  rpc IsPrimeNumber(IsPrimeNumberRequest) returns (IsPrimeNumberResponse) {}
+}
+
+message IsPrimeNumberRequest {
+  int32 number = 1;
+}
+
+message IsPrimeNumberResponse {
+  int32 number_tested = 1;
+  bool is_prime = 2;
+  int64 validation_time = 3;
+  int32 auto_incrementing_seq = 4;
+  int32 time_needed_to_validate_microsec = 5;
+}
+
+// protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative .\primenumber.proto
