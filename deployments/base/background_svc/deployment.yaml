@@ -1,0 +1,29 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: background
+  namespace: default
+  labels:
+    app: background
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "background"
+  template:
+    metadata:
+      labels:
+        app: "background"
+    spec:
+      containers:
+        - name: "service"
+          image: ghcr.io/vediatoni/background:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 50051
+              name: "grpc"
+          envFrom:
+            - secretRef:
+                name: "background-secret"
+            - configMapRef:
+                name: "background-cm"

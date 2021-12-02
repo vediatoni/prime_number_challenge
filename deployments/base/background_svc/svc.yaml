@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: background-svc
+  labels:
+    app: background-svc
+spec:
+  selector:
+    app: background
+  ports:
+  - name: grpc
+    port: 80
+    targetPort: grpc
+    nodePort: 30081
+  type: NodePort

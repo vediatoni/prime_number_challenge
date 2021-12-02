@@ -1,0 +1,7 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: input-cm
+data:
+  BACKGROUND_SERVICE_ADDRESS: "background-svc"
+  PORT: "80"

@@ -1,4 +1,4 @@
-POST localhost:8080/test
+POST 0.0.0.0:30080/test
 content-type: application/json
 
 {

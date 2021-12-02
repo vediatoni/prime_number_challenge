@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: input-svc
+  labels:
+    app: input-svc
+spec:
+  selector:
+    app: input
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30080
+  type: NodePort

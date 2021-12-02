@@ -12,6 +12,28 @@ The system should have the following characteristic:
 4. All components should run in docker image, preferable (not necessary) configured in Kubernetes
 5. System should be able to handle multiple concurrent request and should be writing to postgres database in an asynchronous manner
 
+### /cmd
+Main applications for this project.
 
+### /internal
+Private application and library code. This is the code you don't want others importing in their applications or libraries.
 
+### /pkg
+Library code that's ok to use by external applications.
 
+### /migrations
+DB migrations (using migrate CLI)
+
+### /build
+Packaging and Continuous Integration.
+
+### /deployments
+Kubernetes files
+
+[You can read more about the structure here](https://github.com/golang-standards/project-layout)
+
+## TODO
+- Tests
+- Documentation
+- Code review
+- Next.JS app

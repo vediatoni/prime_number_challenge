@@ -1,0 +1,27 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: input
+  namespace: default
+  labels:
+    app: input
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "input"
+  template:
+    metadata:
+      labels:
+        app: "input"
+    spec:
+      containers:
+        - name: "service"
+          image: ghcr.io/vediatoni/input:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: "http"
+          envFrom:
+            - configMapRef:
+                name: "input-cm"
