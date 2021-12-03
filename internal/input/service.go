@@ -38,6 +38,10 @@ func (s *Service) Run() error {
 	s.Logger.Info("Starting server")
 
 	http.HandleFunc("/", s.NumHandler)
+	http.HandleFunc("/healtz", func (w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	})
 	portString := fmt.Sprintf(":%s", s.Config.Port)
 	s.Logger.Infof("Listening on port %s", portString)
 	err := http.ListenAndServe(portString, nil)
