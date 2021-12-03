@@ -3,4 +3,4 @@ apiVersion: v1
 metadata:
   name: background-cm
 data:
-  PORT: "80"
+  SELF_SVC_ADDRESS: "background-svc:80"

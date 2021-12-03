@@ -1,0 +1,14 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: background
+  namespace: default
+  labels:
+    app: background
+spec:
+  template:
+    spec:
+      containers:
+        - name: "service"
+          image: ghcr.io/vediatoni/background:1.0.0
+          imagePullPolicy: Always

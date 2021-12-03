@@ -2,7 +2,6 @@ package background
 
 import (
 	"context"
-	"fmt"
 	"prime_number_challenge/pkg/database"
 	pb "prime_number_challenge/pkg/prime_number"
 	"time"
@@ -34,7 +33,6 @@ func isPrime(n int32) bool {
 	}
 	for i := int32(2); i <= n-1; i++ {
 		if (n % i) == 0 {
-			fmt.Println(i)
 			return false
 		}
 	}
@@ -46,7 +44,8 @@ func (s *Service) SaveToDB(number *pb.IsPrimeNumberResponse) {
 	s.Logger.Debugf("Query: %s", query)
 	insert, err := s.db.Insert(query)
 	if err != nil {
-		fmt.Println(insert)
 		s.Logger.Errorf("Error inserting into DB: %v", err)
 	}
+
+	s.Logger.Debugf("Insert results: %v", insert)
 }

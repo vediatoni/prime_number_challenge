@@ -11,7 +11,7 @@ import (
 
 type Config struct {
 	DatabaseConnectionString string `yaml:"databaseConnectionString" env:"DATABASE_CONNECTION_STRING" required:"true"`
-	Port                     string `yaml:"port" env:"PORT" required:"true"`
+	SelfSvcAddress                     string `yaml:"selfSvcAddress" env:"SELF_SVC_ADDRESS" required:"true"`
 }
 
 type Service struct {
@@ -35,15 +35,14 @@ func New(config *Config) (*Service, error) {
 
 func (s *Service) Run() error {
 	s.Logger.Info("Starting server")
-	port := fmt.Sprintf(":%s", s.Config.Port)
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", s.Config.SelfSvcAddress)
 	if err != nil {
 		return fmt.Errorf("failed to listen: %v", err)
 	}
 
 	grpcServer := grpc.NewServer()
 	pb.RegisterPrimeNumberServiceServer(grpcServer, s)
-	s.Logger.Info("Listening on port " + s.Config.Port)
+	s.Logger.Info("Listening on " + s.Config.SelfSvcAddress)
 	if err := grpcServer.Serve(lis); err != nil {
 		return fmt.Errorf("failed to serve: %v", err)
 	}

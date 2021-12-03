@@ -1,0 +1,14 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: input
+  namespace: default
+  labels:
+    app: input
+spec:
+  template:
+    spec:
+      containers:
+        - name: "service"
+          image: ghcr.io/vediatoni/input:1.0.0
+          imagePullPolicy: Always

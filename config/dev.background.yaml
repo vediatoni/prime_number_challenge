@@ -1,2 +1,2 @@
 databaseConnectionString: "user=postgres password=Test12345 host=localhost port=5432 dbname=prime_numbers sslmode=disable"
-port: "50051"
+selfSvcAddress: "localhost:50051"
