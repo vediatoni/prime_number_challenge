@@ -11,14 +11,14 @@ func (s *Service) IsPrimeNumber(_ context.Context, in *pb.IsPrimeNumberRequest) 
 	start := time.Now()
 	result := isPrime(in.GetNumber())
 	elapsed := time.Since(start)
-	elapsedMs := int32(elapsed / time.Microsecond)
-	s.Logger.Debugf("Prime check took %v ms", elapsedMs)
+	elapsedMicroseconds := elapsed.Microseconds()
+	s.Logger.Debugf("Prime check took %v micro seconds", elapsedMicroseconds)
 
 	res := pb.IsPrimeNumberResponse{
 		NumberTested:                 in.GetNumber(),
 		IsPrime:                      result,
 		ValidationTime:               time.Now().Unix(), // works until 2038 :) also, 4 bytes
-		TimeNeededToValidateMicrosec: elapsedMs,
+		TimeNeededToValidateMicrosec: elapsedMicroseconds,
 	}
 
 	go s.SaveToDB(&res)

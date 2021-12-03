@@ -1,9 +1,0 @@
-POST localhost:30080/
-content-type: application/json
-
-{
-  "n": 17
-}
-
-###
-GET localhost:30080/healtz
