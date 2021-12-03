@@ -9,7 +9,8 @@ import (
 )
 
 // LoadConfigFromFile - loads the config from the given file path, but it will prioritize the env variable, so you can
-// override the config file with the env variables. This is for helpfulness.
+// override the config file with the env variables. This is for helpfulness. In c interface{} you should insert an empty
+// struct. c argument will most likely be replaced by generics in the future (when go generics releases).
 func LoadConfigFromFile(filePath string, c interface{}) (interface{}, error) {
 	if filePath == "" {
 		return nil, fmt.Errorf("file path is empty")
