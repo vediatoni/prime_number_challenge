@@ -22,7 +22,7 @@ func (s *Service) IsPrimeNumber(_ context.Context, in *pb.IsPrimeNumberRequest) 
 		TimeNeededToValidateMicrosec: elapsedMs,
 	}
 
-	s.SaveToDB(&res)
+	go s.SaveToDB(&res)
 
 	return &res, nil
 }
