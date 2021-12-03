@@ -1,6 +1,10 @@
 $v = $args[0]
-docker build . -f .\build\input.Dockerfile -t ghcr.io/vediatoni/input:$v
-docker push ghcr.io/vediatoni/input:$v
+$containerRegistry = "ghcr.io/vediatoni"
+$packages = @("input","background") #array
 
-docker build . -f .\build\background.Dockerfile -t ghcr.io/vediatoni/background:$v
-docker push ghcr.io/vediatoni/background:$v
+$packages | ForEach-Object {
+    $package = $_
+    $tag = $containerRegistry + "/$package" + ":$v"
+    docker build . -f .\build\$package.Dockerfile -t $tag
+    docker push $tag
+}
