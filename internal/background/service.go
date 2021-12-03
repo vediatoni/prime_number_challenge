@@ -22,13 +22,16 @@ type Service struct {
 }
 
 func New(config *Config) (*Service, error) {
+	logger := log.New()
 	db, err := database.New(config.DatabaseConnectionString)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create database service: %w", err)
 	}
+	log.Debugf("Database service created and connected")
+
 	return &Service{
 		Config: config,
-		Logger: log.New(),
+		Logger: logger,
 		db:     db,
 	}, nil
 }

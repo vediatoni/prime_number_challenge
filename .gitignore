@@ -12,3 +12,6 @@
 *.out
 
 .idea/
+
+load_testing/results
+load_testing/results-plot.html

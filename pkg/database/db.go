@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
@@ -31,9 +32,9 @@ func New(dbConnectionString string) (*Service, error) {
 }
 
 // Insert - Insert something via query
-func (s *Service) Insert(query string, args ...interface{}) (sql.Result, error) {
+func (s *Service) Insert(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
 	s.Logger.Debugf("Insert: %s", query)
-	return s.conn.Exec(query, args...)
+	return s.conn.ExecContext(ctx, query, args...)
 }
 
 // docker run --name postgres -e POSTGRES_PASSWORD=Test12345 -e POSTGRES_DB=prime_numbers -p 5432:5432 -d postgres

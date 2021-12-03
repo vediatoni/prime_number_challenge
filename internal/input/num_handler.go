@@ -1,12 +1,10 @@
 package input
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	pb "prime_number_challenge/pkg/prime_number"
-	"time"
 )
 
 type Payload struct {
@@ -23,18 +21,17 @@ func (s *Service) NumHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Oops, something went wrong :(", http.StatusBadRequest)
 		return
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	s.Logger.Debugf("NumHandler: payload: %v", payload)
 
 	var response *pb.IsPrimeNumberResponse
-	response, err = s.c.IsPrimeNumber(ctx, &pb.IsPrimeNumberRequest{Number: payload.Number})
-
+	response, err = s.c.IsPrimeNumber(r.Context(), &pb.IsPrimeNumberRequest{Number: payload.Number})
 	if err != nil {
 		s.Logger.Errorf("NumHandler: could not check if the number is prime: %v", err)
 		http.Error(w, "Oops, something went wrong :(", http.StatusBadRequest)
 		return
 	}
+	s.Logger.Debugf("NumHandler: response: %v", response.IsPrime)
+
 
 	_, err = w.Write([]byte(fmt.Sprintf("%v", response.IsPrime)))
 	if err != nil {

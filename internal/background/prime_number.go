@@ -8,17 +8,17 @@ import (
 )
 
 func (s *Service) IsPrimeNumber(_ context.Context, in *pb.IsPrimeNumberRequest) (*pb.IsPrimeNumberResponse, error) {
+	s.Logger.Debugf("IsPrimeNumber: starting calculation for number: %d", in.Number)
 	start := time.Now()
 	result := isPrime(in.GetNumber())
 	elapsed := time.Since(start)
-	elapsedMicroseconds := elapsed.Microseconds()
-	s.Logger.Debugf("Prime check took %v micro seconds", elapsedMicroseconds)
+	s.Logger.Debugf("Prime check took %v micro seconds", elapsed.Microseconds())
 
 	res := pb.IsPrimeNumberResponse{
 		NumberTested:                 in.GetNumber(),
 		IsPrime:                      result,
 		ValidationTime:               time.Now().Unix(), // works until 2038 :) also, 4 bytes
-		TimeNeededToValidateMicrosec: elapsedMicroseconds,
+		TimeNeededToValidateMicrosec: elapsed.Microseconds(),
 	}
 
 	go s.SaveToDB(&res)
@@ -40,9 +40,12 @@ func isPrime(n int32) bool {
 }
 
 func (s *Service) SaveToDB(number *pb.IsPrimeNumberResponse) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
 	query := database.BuildInsertQuery(number)
 	s.Logger.Debugf("Query: %s", query)
-	insert, err := s.db.Insert(query)
+	insert, err := s.db.Insert(ctx, query)
 	if err != nil {
 		s.Logger.Errorf("Error inserting into DB: %v", err)
 	}

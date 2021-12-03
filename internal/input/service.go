@@ -21,14 +21,16 @@ type Service struct {
 }
 
 func New(config *Config) (*Service, error) {
+	logger := log.New()
 	conn, err := grpc.Dial(config.BackgroundServiceAddress, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
+	log.Debugf("Connected to background service at %s", config.BackgroundServiceAddress)
 
 	return &Service{
 		Config: config,
-		Logger: log.New(),
+		Logger: logger,
 		conn:   conn,
 		c:      pb.NewPrimeNumberServiceClient(conn),
 	}, nil
