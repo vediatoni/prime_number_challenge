@@ -1,6 +1,9 @@
-POST 0.0.0.0:30080/test
+POST localhost:30080/
 content-type: application/json
 
 {
   "n": 4124
 }
+
+###
+GET localhost:30080/healtz

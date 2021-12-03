@@ -11,5 +11,4 @@ spec:
   - name: grpc
     port: 80
     targetPort: grpc
-    nodePort: 30081
-  type: NodePort
+  type: ClusterIP
