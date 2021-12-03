@@ -15,8 +15,7 @@ message IsPrimeNumberResponse {
   int32 number_tested = 1;
   bool is_prime = 2;
   int64 validation_time = 3;
-  int32 auto_incrementing_seq = 4;
-  int64 time_needed_to_validate_microsec = 5;
+  int64 time_needed_to_validate_microsec = 4;
 }
 
 // protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative .\prime_number.proto

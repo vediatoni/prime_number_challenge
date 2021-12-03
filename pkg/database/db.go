@@ -38,4 +38,5 @@ func (s *Service) Insert(ctx context.Context, query string, args ...interface{})
 }
 
 // docker run --name postgres -e POSTGRES_PASSWORD=Test12345 -e POSTGRES_DB=prime_numbers -p 5432:5432 -d postgres
+// migrate create -ext sql -dir migrations -seq create_prime_numbers_table
 // migrate -database postgres://postgres:Test12345@localhost:5432/prime_numbers?sslmode=disable -source file://migrations up

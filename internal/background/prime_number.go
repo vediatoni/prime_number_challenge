@@ -40,7 +40,7 @@ func isPrime(n int32) bool {
 }
 
 func (s *Service) SaveToDB(number *pb.IsPrimeNumberResponse) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	query := database.BuildInsertQuery(number)

@@ -10,5 +10,5 @@ spec:
     spec:
       containers:
         - name: "service"
-          image: ghcr.io/vediatoni/input:1.0.4
+          image: ghcr.io/vediatoni/input:1.0.6
           imagePullPolicy: Always
