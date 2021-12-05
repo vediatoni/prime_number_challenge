@@ -5,3 +5,4 @@ metadata:
 data:
   BACKGROUND_SERVICE_ADDRESS: "background-svc:80"
   PORT: "80"
+  LOG_LEVEL: "info"

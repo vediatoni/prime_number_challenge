@@ -9,6 +9,22 @@ spec:
     app: background
   ports:
   - name: grpc
-    port: 80
+    port: 50051
     targetPort: grpc
   type: ClusterIP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: background-headless-svc
+  labels:
+    app: background-headless-svc
+spec:
+  selector:
+    app: background
+  ports:
+    - name: grpc
+      port: 50051
+      targetPort: grpc
+  type: ClusterIP
+  clusterIP: None

@@ -3,44 +3,47 @@ package input
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
 	"net/http"
 	pb "prime_number_challenge/pkg/prime_number"
 )
 
 type Config struct {
-	BackgroundServiceAddress string `yaml:"backgroundServiceAddress" env:"BACKGROUND_SERVICE_ADDRESS" required:"true"`
-	Port                     string `yaml:"port" env:"PORT" required:"true"`
+	BackgroundServiceAddress string `yaml:"backgroundServiceAddress" env:"BACKGROUND_SERVICE_ADDRESS"`
+	Port                     string `yaml:"port" env:"PORT"`
+	LoadBalancingModel       string `yaml:"loadBalancingModel" env:"LOAD_BALANCING_MODEL"`
+	LogLevel                 string `yaml:"logLevel" env:"LOG_LEVEL"`
 }
-
 type Service struct {
 	Config *Config
 	Logger *log.Logger
-	conn   *grpc.ClientConn
 	c      pb.PrimeNumberServiceClient
 }
 
-func New(config *Config) (*Service, error) {
-	logger := log.New()
-	conn, err := grpc.Dial(config.BackgroundServiceAddress, grpc.WithInsecure())
+func New(config *Config, c pb.PrimeNumberServiceClient) (*Service, error) {
+	loglvl, err := log.ParseLevel(config.LogLevel)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid log level: %s, the correct values are: panic, fatal, error, warn, info, debug, trace", config.LogLevel)
 	}
+
+	if config == nil {
+		config = DefaultConfig()
+	}
+
+	logger := log.New()
+	logger.SetLevel(loglvl)
 	log.Debugf("Connected to background service at %s", config.BackgroundServiceAddress)
 
 	return &Service{
 		Config: config,
 		Logger: logger,
-		conn:   conn,
-		c:      pb.NewPrimeNumberServiceClient(conn),
+		c:      c,
 	}, nil
 }
 
 func (s *Service) Run() error {
 	s.Logger.Info("Starting server")
-
 	http.HandleFunc("/", s.NumHandler)
-	http.HandleFunc("/healtz", func (w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/healtz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
@@ -52,4 +55,11 @@ func (s *Service) Run() error {
 	}
 
 	return nil
+}
+
+func DefaultConfig() *Config {
+	return &Config{
+		Port:                     "8080",
+		BackgroundServiceAddress: "localhost:50051",
+	}
 }

@@ -1,0 +1,31 @@
+# This file is primarily used to set the version of the images used in the application
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: background
+  namespace: default
+  labels:
+    app: background
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: "service"
+          image: ghcr.io/vediatoni/background:1.1.0
+          imagePullPolicy: Always
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: input
+  namespace: default
+  labels:
+    app: input
+spec:
+  template:
+    spec:
+      containers:
+        - name: "service"
+          image: ghcr.io/vediatoni/input:1.1.0
+          imagePullPolicy: Always

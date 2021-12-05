@@ -1,2 +1,4 @@
 backgroundServiceAddress: "localhost:50051"
 port: "8080"
+loadBalancingModel: ""
+logLevel: "debug"

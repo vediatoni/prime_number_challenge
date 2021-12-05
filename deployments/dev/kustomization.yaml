@@ -4,6 +4,6 @@ resources:
   - ../base/
 namespace: default
 patchesStrategicMerge:
-  - background-secrets.yaml
-  - background-deployment.yaml
-  - input-deployment.yaml
+  - background-config.yaml
+  - input-cm.yaml
+  - deployment.yaml

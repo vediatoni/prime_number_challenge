@@ -10,8 +10,9 @@ import (
 )
 
 type Config struct {
-	DatabaseConnectionString string `yaml:"databaseConnectionString" env:"DATABASE_CONNECTION_STRING" required:"true"`
-	SelfSvcAddress                     string `yaml:"selfSvcAddress" env:"SELF_SVC_ADDRESS" required:"true"`
+	DatabaseConnectionString string `yaml:"databaseConnectionString" env:"DATABASE_CONNECTION_STRING"`
+	SelfSvcAddress           string `yaml:"selfSvcAddress" env:"SELF_SVC_ADDRESS"`
+	LogLevel                 string `yaml:"logLevel" env:"LOG_LEVEL"`
 }
 
 type Service struct {
@@ -23,6 +24,11 @@ type Service struct {
 
 func New(config *Config) (*Service, error) {
 	logger := log.New()
+	loglvl, err := log.ParseLevel(config.LogLevel)
+	if err != nil {
+		return nil, fmt.Errorf("invalid log level: %s, the correct values are: panic, fatal, error, warn, info, debug, trace", config.LogLevel)
+	}
+	logger.SetLevel(loglvl)
 	db, err := database.New(config.DatabaseConnectionString)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create database service: %w", err)

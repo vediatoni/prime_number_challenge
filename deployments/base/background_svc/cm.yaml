@@ -4,3 +4,4 @@ metadata:
   name: background-cm
 data:
   SELF_SVC_ADDRESS: "0.0.0.0:50051"
+  LOG_LEVEL: "info"
