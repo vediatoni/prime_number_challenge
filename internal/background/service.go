@@ -23,17 +23,25 @@ type Service struct {
 }
 
 func New(config *Config) (*Service, error) {
+	if config == nil {
+		config = DefaultConfig()
+	}
+
 	logger := log.New()
 	loglvl, err := log.ParseLevel(config.LogLevel)
 	if err != nil {
 		return nil, fmt.Errorf("invalid log level: %s, the correct values are: panic, fatal, error, warn, info, debug, trace", config.LogLevel)
 	}
 	logger.SetLevel(loglvl)
-	db, err := database.New(config.DatabaseConnectionString)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create database service: %w", err)
+	var db *database.Service
+	if config.DatabaseConnectionString != "" {
+		db, err = database.New(config.DatabaseConnectionString)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create database service: %w", err)
+		}
+		logger.Debugf("Database service created and connected")
 	}
-	log.Debugf("Database service created and connected")
+
 
 	return &Service{
 		Config: config,
@@ -56,4 +64,12 @@ func (s *Service) Run() error {
 		return fmt.Errorf("failed to serve: %v", err)
 	}
 	return nil
+}
+
+func DefaultConfig() *Config {
+	return &Config{
+		DatabaseConnectionString: "",
+		SelfSvcAddress:           ":50051",
+		LogLevel:                 "info",
+	}
 }

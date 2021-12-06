@@ -4,4 +4,10 @@ metadata:
   name: background-secret
 stringData:
   DATABASE_CONNECTION_STRING: "user=postgres password=Test12345 host=172.17.0.1 port=5432 dbname=prime_numbers sslmode=disable"
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: background-cm
+data:
   LOG_LEVEL: "debug"

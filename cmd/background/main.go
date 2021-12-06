@@ -18,6 +18,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error creating background service: %v", err)
 	}
+	background.Logger.Debugf("Log level: %s", background.Logger.Level)
 
 	err = background.Run()
 	if err != nil {

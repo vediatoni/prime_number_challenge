@@ -10,24 +10,27 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 	"io/ioutil"
 	"net"
+	"net/http"
 	"net/http/httptest"
+	"prime_number_challenge/internal/background"
 	pb "prime_number_challenge/pkg/prime_number"
 	"strings"
 	"testing"
+	"time"
 )
-
-type service struct {
-	pb.UnimplementedPrimeNumberServiceServer
-}
 
 const bufSize = 1024 * 1024
 
 var lis *bufconn.Listener
 
-func init() {
+func initBackgroundSvc() {
+	bg, err := background.New(nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 	lis = bufconn.Listen(bufSize)
 	s := grpc.NewServer()
-	pb.RegisterPrimeNumberServiceServer(s, &service{})
+	pb.RegisterPrimeNumberServiceServer(s, bg)
 	go func() {
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("Server exited with error: %v", err)
@@ -40,14 +43,13 @@ func bufDialer(context.Context, string) (net.Conn, error) {
 }
 
 func createTestSvc(cfg *Config) (*Service, error) {
-	ctx := context.Background()
-	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	initBackgroundSvc()
+
+	conn, err := grpc.Dial("bufnet", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
 	if err != nil {
 		return nil, fmt.Errorf("failed to dial bufnet: %v", err)
 	}
-	defer conn.Close()
-	client := pb.NewPrimeNumberServiceClient(conn)
-	svc, err := New(cfg, client)
+	svc, err := New(cfg, pb.NewPrimeNumberServiceClient(conn))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create service: %v", err)
 	}
@@ -56,12 +58,15 @@ func createTestSvc(cfg *Config) (*Service, error) {
 }
 
 func TestNew(t *testing.T) {
-	svc, err := createTestSvc(&Config{Port: "8080"})
+	svc, err := createTestSvc(&Config{
+		Port:     "8080",
+		LogLevel: "debug",
+	})
 	if err != nil {
 		t.Fatalf("failed to create service: %v", err)
 	}
 	if svc == nil {
-		t.Fatal("RealService is nil")
+		t.Fatal("service is nil")
 	}
 }
 
@@ -81,17 +86,48 @@ func TestService_Run(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create service: %v", err)
 	}
-	if err := svc.Run(); err != nil {
-		t.Fatalf("failed to run service: %v", err)
+
+	serviceRunning := make(chan struct{})
+	serviceDone := make(chan struct{})
+	go func() {
+		close(serviceRunning)
+		if err := svc.Run(); err != http.ErrServerClosed && err != nil {
+			t.Fatalf("failed to run service: %v", err)
+		}
+		defer close(serviceDone)
+	}()
+
+	<-serviceRunning
+
+	resp, err := http.Get(fmt.Sprintf("http://localhost%v/healtz", svc.httpServer.Addr))
+	if err != nil {
+		t.Fatalf("failed to get healthz: %v", err)
 	}
 
-	// TODO: send http request to the running service (health check)
-	httptest.NewRequest("GET", "/healtz", nil)
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("healthz status code is not OK: %v", resp.StatusCode)
+	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	err = svc.httpServer.Shutdown(ctx)
+	if err != nil {
+		t.Fatalf("failed to shutdown server: %v", err)
+	}
 
+	<-serviceDone
 }
 
-func TestRoutes(t *testing.T) {
+func TestService_Healtz(t *testing.T) {
+	svr := httptest.NewServer(http.HandlerFunc(healthCheck))
+	defer svr.Close()
+	resp, err := http.Get(svr.URL)
+	if err != nil {
+		t.Fatalf("failed to send request: %v", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("response status code is not OK: %v", resp.StatusCode)
+	}
 }
 
 func TestService_NumHandler(t *testing.T) {
@@ -105,7 +141,7 @@ func TestService_NumHandler(t *testing.T) {
 			request: &Payload{
 				Number: 3,
 			},
-			expect: FailedToConnectToBackgroundService,
+			expect: "true",
 		},
 		{
 			name: "Test 2",
@@ -124,15 +160,19 @@ func TestService_NumHandler(t *testing.T) {
 			request: &struct{ rnd string }{rnd: "something random"},
 			expect:  LessThanZero,
 		},
-	}
-
-	svc, err := createTestSvc(nil)
-	if err != nil {
-		t.Fatalf("failed to create service: %v", err)
+		{
+			name:    "Test 5",
+			request: &Payload{Number: 70},
+			expect:  "false",
+		},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
+			svc, err := createTestSvc(nil)
+			if err != nil {
+				t.Fatalf("failed to create service: %v", err)
+			}
 			jsonBody, err := json.Marshal(testCase.request)
 			if err != nil {
 				t.Fatalf("failed to marshal request: %v", err)
@@ -150,7 +190,7 @@ func TestService_NumHandler(t *testing.T) {
 			}
 			result := strings.TrimRight(string(out), "\n")
 			if result != testCase.expect {
-				t.Fatalf("expected %v, got %v", result, testCase.expect)
+				t.Fatalf("expected %v, got %v", testCase.expect, result)
 			}
 		})
 	}

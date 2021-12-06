@@ -32,12 +32,13 @@ func main() {
 		log.Fatalf("Error connecting to background service: %v", err)
 	}
 
-	s, err := input.New(&cfg, pb.NewPrimeNumberServiceClient(grpcConn))
+	input, err := input.New(&cfg, pb.NewPrimeNumberServiceClient(grpcConn))
 	if err != nil {
 		log.Fatalf("Error creating input service: %v", err)
 	}
+	input.Logger.Debugf("Log level: %s", input.Logger.Level)
 
-	err = s.Run()
+	err = input.Run()
 	if err != nil {
 		log.Fatalf("Error running input service: %v", err)
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 func (s *Service) IsPrimeNumber(_ context.Context, in *pb.IsPrimeNumberRequest) (*pb.IsPrimeNumberResponse, error) {
-	s.Logger.Debugf("IsPrimeNumber: starting calculation for number: %d", in.Number)
+	s.Logger.Debugf("IsPrimeNumber: starting calculation for number: %d", in.GetNumber())
 	start := time.Now()
 	result := isPrime(in.GetNumber())
 	elapsed := time.Since(start)
@@ -40,15 +40,18 @@ func isPrime(n int32) bool {
 }
 
 func (s *Service) SaveToDB(number *pb.IsPrimeNumberResponse) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	if s.db != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
 
-	query := database.BuildInsertQuery("prime_numbers",number)
-	s.Logger.Debugf("Query: %s", query)
-	insert, err := s.db.Insert(ctx, query)
-	if err != nil {
-		s.Logger.Errorf("Error inserting into DB: %v", err)
+		query := database.BuildInsertQuery("prime_numbers", number)
+		s.Logger.Debugf("Query: %s", query)
+		insert, err := s.db.Insert(ctx, query)
+		if err != nil {
+			s.Logger.Errorf("Error inserting into DB: %v", err)
+		}
+
+		s.Logger.Debugf("Insert results: %v", insert)
 	}
 
-	s.Logger.Debugf("Insert results: %v", insert)
 }
