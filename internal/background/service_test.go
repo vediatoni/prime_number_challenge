@@ -3,7 +3,13 @@ package background
 import "testing"
 
 func TestNew(t *testing.T) {
-	// TODO
+	svc, err := New(nil)
+	if err != nil {
+		t.Fatalf("failed to create service: %v", err)
+	}
+	if svc == nil {
+		t.Fatal("service is nil")
+	}
 }
 
 func TestService_Run(t *testing.T) {

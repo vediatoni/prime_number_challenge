@@ -162,6 +162,11 @@ func TestService_NumHandler(t *testing.T) {
 		},
 		{
 			name:    "Test 5",
+			request: &Payload{Number: 1},
+			expect:  "false",
+		},
+		{
+			name:    "Test 6",
 			request: &Payload{Number: 70},
 			expect:  "false",
 		},
