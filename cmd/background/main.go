@@ -2,8 +2,8 @@ package main
 
 import (
 	log "github.com/sirupsen/logrus"
-	"prime_number_challenge/internal/background"
-	"prime_number_challenge/pkg/config"
+	"github.com/vediatoni/prime_number_challenge/internal/background"
+	"github.com/vediatoni/prime_number_challenge/pkg/config"
 )
 
 const configFilePath = "config/dev.background.yaml"

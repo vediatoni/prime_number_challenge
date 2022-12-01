@@ -5,18 +5,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/test/bufconn"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"prime_number_challenge/internal/background"
-	pb "prime_number_challenge/pkg/prime_number"
 	"strings"
 	"testing"
 	"time"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/vediatoni/prime_number_challenge/internal/background"
+	pb "github.com/vediatoni/prime_number_challenge/pkg/prime_number"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/test/bufconn"
 )
 
 const bufSize = 1024 * 1024

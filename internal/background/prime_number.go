@@ -2,9 +2,10 @@ package background
 
 import (
 	"context"
-	"prime_number_challenge/pkg/database"
-	pb "prime_number_challenge/pkg/prime_number"
 	"time"
+
+	"github.com/vediatoni/prime_number_challenge/pkg/database"
+	pb "github.com/vediatoni/prime_number_challenge/pkg/prime_number"
 )
 
 func (s *Service) IsPrimeNumber(_ context.Context, in *pb.IsPrimeNumberRequest) (*pb.IsPrimeNumberResponse, error) {

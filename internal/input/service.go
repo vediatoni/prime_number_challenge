@@ -2,9 +2,10 @@ package input
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"net/http"
-	pb "prime_number_challenge/pkg/prime_number"
+
+	log "github.com/sirupsen/logrus"
+	pb "github.com/vediatoni/prime_number_challenge/pkg/prime_number"
 )
 
 type Config struct {
@@ -14,10 +15,10 @@ type Config struct {
 	LogLevel                 string `yaml:"logLevel" env:"LOG_LEVEL"`
 }
 type Service struct {
-	Config *Config
-	Logger *log.Logger
-	c      pb.PrimeNumberServiceClient
-	httpServer      *http.Server
+	Config     *Config
+	Logger     *log.Logger
+	c          pb.PrimeNumberServiceClient
+	httpServer *http.Server
 }
 
 func New(config *Config, c pb.PrimeNumberServiceClient) (*Service, error) {
@@ -33,13 +34,12 @@ func New(config *Config, c pb.PrimeNumberServiceClient) (*Service, error) {
 	logger := log.New()
 	logger.SetLevel(loglvl)
 
-
 	return &Service{
 		Config: config,
 		Logger: logger,
 		c:      c,
 		httpServer: &http.Server{
-			Addr:    fmt.Sprintf(":%s", config.Port),
+			Addr: fmt.Sprintf(":%s", config.Port),
 		},
 	}, nil
 }

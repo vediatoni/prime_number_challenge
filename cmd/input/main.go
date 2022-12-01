@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+
 	log "github.com/sirupsen/logrus"
+	"github.com/vediatoni/prime_number_challenge/internal/input"
+	"github.com/vediatoni/prime_number_challenge/pkg/config"
+	pb "github.com/vediatoni/prime_number_challenge/pkg/prime_number"
 	"google.golang.org/grpc"
-	"prime_number_challenge/internal/input"
-	"prime_number_challenge/pkg/config"
-	pb "prime_number_challenge/pkg/prime_number"
 )
 
 const configFilePath = "config/dev.input.yaml"

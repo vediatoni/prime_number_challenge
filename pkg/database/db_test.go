@@ -2,8 +2,9 @@ package database
 
 import (
 	"fmt"
-	"prime_number_challenge/pkg/prime_number"
 	"testing"
+
+	"github.com/vediatoni/prime_number_challenge/pkg/prime_number"
 )
 
 func TestNew(t *testing.T) {
@@ -56,7 +57,7 @@ func TestBuildInsertQuery(t *testing.T) {
 				ValidationTime:               2,
 				TimeNeededToValidateMicrosec: 500,
 			},
-			want: fmt.Sprintf("INSERT INTO %s (number_tested,is_prime,validation_time," +
+			want: fmt.Sprintf("INSERT INTO %s (number_tested,is_prime,validation_time,"+
 				"time_needed_to_validate_microsec) VALUES (2,TRUE,2,500)", tableName),
 		},
 		{
@@ -65,7 +66,7 @@ func TestBuildInsertQuery(t *testing.T) {
 				NumberTested: 2,
 				IsPrime:      true,
 			},
-			want: fmt.Sprintf("INSERT INTO %s (number_tested,is_prime,validation_time," +
+			want: fmt.Sprintf("INSERT INTO %s (number_tested,is_prime,validation_time,"+
 				"time_needed_to_validate_microsec) VALUES (2,TRUE,0,0)", tableName),
 		},
 	}

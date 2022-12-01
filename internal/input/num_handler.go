@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	pb "prime_number_challenge/pkg/prime_number"
+
+	pb "github.com/vediatoni/prime_number_challenge/pkg/prime_number"
 )
 
 type Payload struct {
@@ -12,8 +13,8 @@ type Payload struct {
 }
 
 const (
-	InvalidInput = "Invalid input"
-	LessThanZero = "Number should be greater than 0"
+	InvalidInput                       = "Invalid input"
+	LessThanZero                       = "Number should be greater than 0"
 	FailedToConnectToBackgroundService = "Oops, something went wrong. Please try again later"
 )
 

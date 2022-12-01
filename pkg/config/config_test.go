@@ -1,8 +1,9 @@
 package config
 
 import (
-	"prime_number_challenge/internal/background"
 	"testing"
+
+	"github.com/vediatoni/prime_number_challenge/internal/background"
 )
 
 // TestLoadConfigFromFile - tries to load specified config files. It doesn't check if the configuration is correct.

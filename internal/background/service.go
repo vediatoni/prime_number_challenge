@@ -2,11 +2,12 @@ package background
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
 	"net"
-	"prime_number_challenge/pkg/database"
-	pb "prime_number_challenge/pkg/prime_number"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/vediatoni/prime_number_challenge/pkg/database"
+	pb "github.com/vediatoni/prime_number_challenge/pkg/prime_number"
+	"google.golang.org/grpc"
 )
 
 type Config struct {
@@ -41,7 +42,6 @@ func New(config *Config) (*Service, error) {
 		}
 		logger.Debugf("Database service created and connected")
 	}
-
 
 	return &Service{
 		Config: config,
