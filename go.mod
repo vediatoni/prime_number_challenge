@@ -1,4 +1,4 @@
-module prime_number_challenge
+module github.com/vediatoni/prime_number_challenge
 
 go 1.17
 
